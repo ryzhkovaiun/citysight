@@ -46,7 +46,7 @@ namespace CitySight.Server.Controllers
                 Type = location.Type,
                 Description = location.Description,
                 ImageIds = location.ImageIds,
-                VisitDate = location.VisitDate?.ToString("D", _culture) ?? "Никогда"
+                VisitDate = location.VisitDate?.ToString("D", _culture) ?? "РќРёРєРѕРіРґР°"
             };
         }
 

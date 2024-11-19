@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34916.146
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CitySight.Server", "CitySight.Server\CitySight.Server.csproj", "{B62B3EB4-D8E3-43FB-8977-CAFCE6B96DAE}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "citysight.client", "citysight.client\citysight.client.esproj", "{48AE5F2B-9AEF-4EBA-BC57-0679C30323CF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B62B3EB4-D8E3-43FB-8977-CAFCE6B96DAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B62B3EB4-D8E3-43FB-8977-CAFCE6B96DAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B62B3EB4-D8E3-43FB-8977-CAFCE6B96DAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B62B3EB4-D8E3-43FB-8977-CAFCE6B96DAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48AE5F2B-9AEF-4EBA-BC57-0679C30323CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48AE5F2B-9AEF-4EBA-BC57-0679C30323CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48AE5F2B-9AEF-4EBA-BC57-0679C30323CF}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{48AE5F2B-9AEF-4EBA-BC57-0679C30323CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48AE5F2B-9AEF-4EBA-BC57-0679C30323CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48AE5F2B-9AEF-4EBA-BC57-0679C30323CF}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A1A3F88B-7D63-4924-9651-8C622FB550A7}
+	EndGlobalSection
+EndGlobal

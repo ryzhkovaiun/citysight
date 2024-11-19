@@ -1,0 +1,67 @@
+@if (selectedLocation.id != 0 && locationInformation.name.length != 0) {
+<div class="location-description-container" (mousedown)="resetLocation()">
+  <div class="location-description-box" [class.location-description-box-sizing]="locationInformation.imageIds.length != 0" (mousedown)="$event.stopPropagation()">
+    @if (locationInformation.imageIds.length != 0) {
+      <div class="image-container">
+        <img class="image-container-img" src="/assets/images/{{ locationInformation.imageIds[currentImageIndex] }}.png" />
+        @if (locationInformation.imageIds.length > 1) {
+          <div class="image-buttons">
+            <img class="image-left-arrow" src="/assets/arrow.svg" (click)="prevImage()" />
+            <img class="image-right-arrow" src="/assets/arrow.svg" (click)="nextImage()" />
+          </div>
+        }
+      </div>
+    }
+    <div class="description-container">
+      <div class="location-name">
+        <span class="inter-medium location-heading">{{ selectedLocation.name }}</span>
+        <span class="inter-medium location-type">{{ locationInformation.type }}</span>
+      </div>
+      <div class="description-box">
+        <div class="description-header">
+          <span class="inter-semibold short-description">Ваш отзыв</span>
+          <span class="inter-semibold visit-date">Дата первого посещения: {{ locationInformation.visitDate }}</span>
+        </div>
+        <textarea class="inter-regular description" placeholder="Напишите свой отзыв здесь!" [(ngModel)]="editedDescription"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+}
+<div class="sidebar-container" [class.sidebar-opened]="sidebarOpen">
+  <div class="sidebar-button" [class.sidebar-opened-button]="!sidebarOpen" (click)="moveSidebar()">
+    <img src="/assets/arrow.svg" />
+  </div>
+  <div class="logo-container">
+    <img src="/assets/logo.svg" />
+    <div class="logo-text">
+      <span class="inter-medium logo-text-primary">city</span>
+      <span class="inter-medium logo-text-secondary">sight.</span>
+    </div>
+  </div>
+  <div class="list-container">
+    <div class="search-container">
+      <input id="search" class="inter-medium search" placeholder="Поиск мест и адресов" [(ngModel)]="searchRequest" (input)="runSearch()" />
+    </div>
+    <div class="locations-list">
+      @for (location of filteredLocations; track $index) {
+        <div class="location" (click)="moveToLocation(location)">
+          <img src="/assets/{{ location.icon }}.svg" />
+          <span class="inter-medium">{{ location.name }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+<div class="map-container">
+  <ya-map [center]="[59.222979, 39.889274]" [zoom]="16" [state]="{ controls: [] }" (ready)="onMapReady($event)">
+    @for (location of filteredLocations; track $index) {
+      <ya-placemark
+                    [geometry]="[location.latitude, location.longitude]"
+                    [properties]="{ hintContent: location.name }"
+                    [options]="{ preset: 'islands#icon', iconColor: location.visited ? '#00BFFF' : '#808080' }"
+                    (yaclick)="onPlacemarkClick(location)">
+      </ya-placemark>
+    }
+  </ya-map>
+</div>

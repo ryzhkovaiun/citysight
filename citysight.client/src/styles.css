@@ -1,0 +1,59 @@
+:root {
+  --text-black: #36393E;
+  --neutral-50: #F8F8F8;
+  --neutral-100: #EFEFEF;
+  --neutral-400: #989898;
+  --neutral-650: #606060;
+  --neutral-900: #3D3D3D;
+  --neutral-950: #292929;
+  --primary-500: #3E88E9;
+  --neutral-100-rgb: 239, 239, 239;
+  --neutral-650-rgb: 96, 96, 96;
+  --neutral-950-rgb: 41, 41, 41;
+  --background-color: #000000AA;
+  --background-description-color: #FCFCFD;
+  --letter-spacing: -0.32px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+.inter-regular {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.inter-medium {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.inter-semibold {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.inter-bold {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}

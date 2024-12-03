@@ -6,6 +6,7 @@
   --neutral-650: #606060;
   --neutral-900: #3D3D3D;
   --neutral-950: #292929;
+  --primary-200: #BFD7FE;
   --primary-500: #3E88E9;
   --neutral-100-rgb: 239, 239, 239;
   --neutral-650-rgb: 96, 96, 96;
@@ -27,7 +28,7 @@
 
 body {
   width: 100vw;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .inter-regular {
@@ -56,4 +57,14 @@ body {
   font-optical-sizing: auto;
   font-weight: 700;
   font-style: normal;
+}
+
+.new-placemark-button {
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  font-size: 12px;
+  line-height: 18px;
+  background: #FFFFFF;
+  border: 1px solid #000000;
 }

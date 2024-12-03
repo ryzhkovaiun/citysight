@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
-import { AngularYandexMapsModule, YaReadyEvent } from 'angular8-yandex-maps';
+import { AngularYandexMapsModule, YaReadyEvent, YaEvent } from 'angular8-yandex-maps';
 
 interface Location {
   id: number;
@@ -49,8 +49,8 @@ export class AppComponent {
   };
 
   map!: ymaps.Map;
-  locations!: ReadonlyArray<Location>;
-  filteredLocations: ReadonlyArray<Location> = [];
+  locations!: Array<Location>;
+  filteredLocations: Array<Location> = [];
   searchRequest: string = '';
 
   sidebarOpen: boolean = false;
@@ -61,20 +61,39 @@ export class AppComponent {
   editedDescription: string = '';
   currentImageIndex: number = 0;
 
-  constructor(private http: HttpClient) {
-    http.get<ReadonlyArray<Location>>('/api/locations').subscribe(locations => {
+  createNewLocation: boolean = false;
+  newLocationCoords: ReadonlyArray<number> = [];
+  enteredName: string = '';
+  enteredType: string = '';
+
+  constructor(private http: HttpClient, public changeDetector: ChangeDetectorRef) {
+    (window as any).rootComponent = {};
+    (window as any).rootComponent.createNewPlacemark = this.createNewPlacemark.bind(this);
+
+    http.get<Array<Location>>('/api/locations').subscribe(locations => {
       this.locations = locations;
       this.filteredLocations = locations;
     });
   }
 
-  public resetLocation(): void {
-    if (this.editedDescription != this.locationInformation.description) {
-      this.http.patch(`/api/locations/${this.selectedLocation.id}`, this.editedDescription, { responseType: "text" }).subscribe(() => {});
+  public updateDescription(): void {
+    if (this.editedDescription == this.locationInformation.description) {
+      return this.resetLocation();
     }
 
+    this.http.patch(`/api/locations/${this.selectedLocation.id}`, this.editedDescription, { responseType: "text" }).subscribe(visitDate => {
+      this.selectedLocation.visited = true;
+      this.locationInformation.visitDate = visitDate;
+
+      this.resetLocation();
+    });
+  }
+
+  private resetLocation(): void {
     this.selectedLocation = this.defaultLocation;
     this.locationInformation = this.defaultLocationInformation;
+
+    this.changeDetector.detectChanges();
   }
 
   public moveSidebar(): void {
@@ -124,6 +143,60 @@ export class AppComponent {
     this.map.behaviors.disable('dblClickZoom');
   }
 
+  public onMapClick({ event }: YaEvent<ymaps.Map>): void {
+    var coords = event.get('coords');
+
+    this.map.balloon.open(coords, `<button class="new-placemark-button inter-semibold" onclick="window.rootComponent.createNewPlacemark([${coords[0]}, ${coords[1]}])">Создать новую метку?</button>`);
+  }
+
+  public createNewPlacemark(coords: ReadonlyArray<number>): void {
+    this.map.balloon.close(true);
+
+    this.createNewLocation = true;
+    this.newLocationCoords = coords;
+
+    this.changeDetector.detectChanges();
+  }
+
+  public removePlacemarkPopup(): void {
+    this.createNewLocation = false;
+    this.changeDetector.detectChanges();
+  }
+
+  public onNewPlacemarkConfirmClick(): void {
+    if (this.enteredName.length == 0 || this.enteredType.length == 0) {
+      return;
+    }
+
+    var newLocation = {
+      name: this.enteredName,
+      type: this.enteredType,
+      latitude: this.newLocationCoords[0],
+      longitude: this.newLocationCoords[1]
+    };
+
+    this.enteredName = '';
+    this.enteredType = '';
+    this.newLocationCoords = [];
+
+    this.http.post('/api/locations', newLocation, { responseType: 'json' }).subscribe(result => {
+      var id = (result as any).id;
+
+      this.locations.push({
+        id: id,
+        icon: 'tree-city',
+        name: newLocation.name,
+        latitude: newLocation.latitude,
+        longitude: newLocation.longitude,
+        visited: false
+      });
+
+      this.runSearch();
+
+      this.removePlacemarkPopup();
+    });
+  }
+
   public onPlacemarkClick(location: Location): void {
     this.selectedLocation = location;
 
@@ -135,5 +208,7 @@ export class AppComponent {
       this.locationInformation = info;
       this.editedDescription = info.description;
     });
+
+    this.changeDetector.detectChanges();
   }
 }

@@ -29,6 +29,25 @@ namespace CitySight.Server.Controllers
             return (await dbContext.Locations.ToListAsync()).Select(ToCoordinates);
         }
 
+        [HttpPost]
+        public async Task<ActionResult> Post([FromBody] NewLocation newLocation)
+        {
+            Location location = new ()
+            {
+                Icon = "tree-city",
+                Name = newLocation.Name,
+                Type = newLocation.Type,
+                Description = string.Empty,
+                Latitude = newLocation.Latitude,
+                Longitude = newLocation.Longitude
+            };
+
+            await dbContext.Locations.AddAsync(location);
+            await dbContext.SaveChangesAsync();
+
+            return Ok(new { location.Id });
+        }
+
         [Route("{id}")]
         [HttpGet]
         public async Task<ActionResult<LocationInformation>> GetInformation(long id)
@@ -52,7 +71,7 @@ namespace CitySight.Server.Controllers
 
         [Route("{id}")]
         [HttpPatch]
-        public async Task<ActionResult> UpdateDescription(long id)
+        public async Task<ActionResult<string>> UpdateDescription(long id)
         {
             var location = await dbContext.Locations.FindAsync(id);
 
@@ -64,11 +83,12 @@ namespace CitySight.Server.Controllers
             using (var reader = new StreamReader(HttpContext.Request.Body))
             {
                 location.Description = await reader.ReadToEndAsync();
+                location.VisitDate ??= DateOnly.FromDateTime(DateTime.Now);
             }
 
             await dbContext.SaveChangesAsync();
 
-            return NoContent();
+            return location.VisitDate.Value.ToString("D", _culture);
         }
     }
 }

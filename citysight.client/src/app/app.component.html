@@ -1,6 +1,6 @@
 @if (selectedLocation.id != 0 && locationInformation.name.length != 0) {
-<div class="location-description-container" (mousedown)="resetLocation()">
-  <div class="location-description-box" [class.location-description-box-sizing]="locationInformation.imageIds.length != 0" (mousedown)="$event.stopPropagation()">
+<div class="dim-background-container" (mousedown)="updateDescription()">
+  <div class="popup-container" [class.popup-container-sizing]="locationInformation.imageIds.length != 0" (mousedown)="$event.stopPropagation()">
     @if (locationInformation.imageIds.length != 0) {
       <div class="image-container">
         <img class="image-container-img" src="/assets/images/{{ locationInformation.imageIds[currentImageIndex] }}.png" />
@@ -28,6 +28,25 @@
   </div>
 </div>
 }
+@if (createNewLocation) {
+<div class="dim-background-container" (mousedown)="removePlacemarkPopup()">
+  <div class="popup-container" (mousedown)="$event.stopPropagation()">
+    <div class="placemark-information-container">
+      <div class="placemark-information-input">
+        <span class="inter-semibold">Введите название места</span>
+        <input class="inter-semibold" type="text" [(ngModel)]="enteredName" (input)="changeDetector.detectChanges()" />
+      </div>
+      <div class="placemark-information-input">
+        <span class="inter-semibold">Введите классификацию места</span>
+        <input class="inter-semibold" type="text" [(ngModel)]="enteredType" (input)="changeDetector.detectChanges()" />
+      </div>
+      <div class="placemark-information-confirm">
+        <button class="inter-semibold placemark-information-confirm-button" (click)="onNewPlacemarkConfirmClick()" [class.placemark-information-confirm-locked]="enteredName.length == 0 || enteredType.length == 0">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+}
 <div class="sidebar-container" [class.sidebar-opened]="sidebarOpen">
   <div class="sidebar-button" [class.sidebar-opened-button]="!sidebarOpen" (click)="moveSidebar()">
     <img src="/assets/arrow.svg" />
@@ -45,23 +64,26 @@
     </div>
     <div class="locations-list">
       @for (location of filteredLocations; track $index) {
-        <div class="location" (click)="moveToLocation(location)">
-          <img src="/assets/{{ location.icon }}.svg" />
-          <span class="inter-medium">{{ location.name }}</span>
-        </div>
+      <div class="location" (click)="moveToLocation(location)">
+        <img src="/assets/{{ location.icon }}.svg" />
+        <span class="inter-medium">{{ location.name }}</span>
+      </div>
       }
     </div>
   </div>
 </div>
 <div class="map-container">
-  <ya-map [center]="[59.222979, 39.889274]" [zoom]="16" [state]="{ controls: [] }" (ready)="onMapReady($event)">
+  <ya-map [center]="[59.222979, 39.889274]"
+          [zoom]="16"
+          [state]="{ controls: [] }"
+          (ready)="onMapReady($event)"
+          (yaclick)="onMapClick($event)">
     @for (location of filteredLocations; track $index) {
-      <ya-placemark
-                    [geometry]="[location.latitude, location.longitude]"
-                    [properties]="{ hintContent: location.name }"
-                    [options]="{ preset: 'islands#icon', iconColor: location.visited ? '#00BFFF' : '#808080' }"
-                    (yaclick)="onPlacemarkClick(location)">
-      </ya-placemark>
+    <ya-placemark [geometry]="[location.latitude, location.longitude]"
+                  [properties]="{ hintContent: location.name }"
+                  [options]="{ preset: 'islands#icon', iconColor: location.visited ? '#00BFFF' : '#808080' }"
+                  (yaclick)="onPlacemarkClick(location)">
+    </ya-placemark>
     }
   </ya-map>
 </div>
